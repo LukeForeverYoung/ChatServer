@@ -1,0 +1,148 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+    <div style="margin:0 auto;margin-top:10em;width:50%;">
+        <script>
+            function login_nav_click() {
+                $('#regist_group').hide();
+                $('#regist_btn').hide();
+                $('#login_btn').show();
+                $('#login_nav').addClass("active");
+                $('#regist_nav').removeClass();
+            }
+            function regist_nav_click() {
+                $('#regist_group').show();
+                $('#regist_btn').show();
+                $('#login_btn').hide();
+
+                $('#login_nav').removeClass();
+                $('#regist_nav').addClass("active");
+            }
+
+/**/</script>
+
+        <!--
+    <style>
+        .nav-tabs {
+            float: none;
+            text-align: center;
+        }
+
+        ul.nav.nav-tabs li {
+            float: none;
+            display: inline-block;
+            margin: 0em;
+        }
+    </style>-->
+        <ul class="nav nav-tabs nav-justified" >
+            <li id="login_nav" role="presentation" class="active"><a onclick="login_nav_click()" href="#">登录</a></li>
+            <li id="regist_nav" role="presentation"><a onclick="regist_nav_click()" href="#">注册</a></li>
+        </ul>
+       
+        <form id="login_form" class="form-horizontal" style="margin-top:2em;">
+            <div class="form-group">
+                <label for="username"  class="col-sm-2 col-sm-offset-2 control-label">用户名</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="username" placeholder="Username">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password"  class="col-sm-2 col-sm-offset-2 control-label">密码</label>
+                <div class="col-sm-8">
+                    <input type="password" class="form-control" id="password" placeholder="Password">
+                </div>
+            </div>
+            <div id="regist_group" hidden="hidden">
+                <div class="form-group">
+                    <label for="sex_div" class="col-sm-2 col-sm-offset-2 control-label">性别</label>
+                    <div class="col-sm-8">
+                        <div id="sex_div" class="radio">
+                            <label class="radio-inline">
+                                <input type="radio" name="sex_r" value="0"> 男
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="sex_r" value="1"> 女
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="age" class="col-sm-2 col-sm-offset-2 control-label">年龄</label>
+                    <div class="col-sm-8">
+                        <input type="number" class="form-control" id="age">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="info" class="col-sm-2 col-sm-offset-2 control-label">个人信息</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="info">
+                    </div>
+                </div>
+            </div>
+        </form>
+        <center>
+            <button id="login_btn" class="btn btn-default" onclick="loginClick()" style="width:6em;">登录</button>
+            <button id="regist_btn" class="btn btn-default" onclick="registClick()" style="width:6em;display:none;">注册</button>
+        </center>
+        
+        <script type="text/javascript">
+            function loginClick() {
+                //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+                var curWwwPath = window.document.location.href;
+                var pathName = window.document.location.pathname;
+                console.log(pathName.substr);
+                var pos = curWwwPath.indexOf('/');
+                //获取主机地址，如： http://localhost:8083
+                var localhostPaht = curWwwPath.substring(0, pos);
+                $.ajax({
+                    url: 'Login',//这里写上你的action路径
+                    data: {
+                        username: $('#username').val(),
+                        password: $('#password').val()
+                    },//将你在form表单上提交的数据序列化
+                    type: 'POST',  //提交方式
+                    dataType: 'json', //提交的数据类型
+                    //contentType: "application/json",
+                    async: true, //是否异步
+                    success: function (data) {//这是个回调函数  data表示从action中传过来的json数据
+                        if (data != false) {
+                            window.location.href = 'Ground';
+                        }
+                        else {
+                            alert("登陆失败");
+                        }
+                        //弹出从action层传过来的json格式的数据(用来显示是否更新成功)
+
+                    }
+                });
+
+            }
+            function registClick() {
+                //通过ajax异步将数据发送给action层
+                $.ajax({
+                    url: '../api/Regist',//这里写上你的action路径
+                    data: JSON.stringify({
+                        username: $('#username').val(),
+                        password: $('#password').val(),
+                        sex: $("input[name='sex_r']:checked").val(),
+                        age: $('#age').val(),
+                        info: $('#info').val(),
+                    }),//将你在form表单上提交的数据序列化
+                    type: 'POST',  //提交方式
+                    dataType: 'text', //提交的数据类型
+                    contentType: "application/json",
+                    async: true, //是否异步
+                    success: function (data) {//这是个回调函数  data表示从action中传过来的json数据
+                        //弹出从action层传过来的json格式的数据(用来显示是否更新成功)
+                        if (data.length >= 10)
+                            alert("注册成功,请登录");
+                        else {
+                            alert(data);
+                            return;
+                        }
+                        login_nav_click();
+                    }
+                });
+            }
+        </script>
+    </div>

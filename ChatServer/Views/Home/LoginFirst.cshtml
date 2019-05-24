@@ -1,0 +1,20 @@
+﻿@{
+    ViewBag.Title = "请先登录";
+}
+<p>请先登录</p>
+<p id="djs">4秒后将返回登陆页面</p>
+<script>
+    onload = function () {
+        var i = 3;
+        setInterval(function () {
+            if (i == 0) {
+                window.location.href = 'Index';
+            }
+            console.log(i);
+            $('#djs').text(i + '秒后将返回登陆页面');
+            i -= 1;
+            
+        }, 1000);
+    }
+    
+</script>

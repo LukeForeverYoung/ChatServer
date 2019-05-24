@@ -1,0 +1,103 @@
+﻿@{
+    ViewBag.Title = "用户广场";
+}
+<script>
+    function updateClick(id) {
+        var tr = $("#" + id);
+        if (tr.find("input[name='sex_r']:checked")[0] == undefined || tr.find("input[name='privilege_r']:checked")[0] == undefined) {
+            alert("有未选中的项");
+            return;
+        }
+        var password = tr.find("input[name='password']")[0].value;
+        var age = tr.find("input[name='age']")[0].value;
+        
+        var sex = tr.find("input[name='sex_r']:checked")[0].value;
+        var privilege = tr.find("input[name='privilege_r']:checked")[0].value;
+        var info = tr.find("input[name='info']")[0].value;
+
+        //通过ajax异步将数据发送给action层
+                $.ajax({
+                    url: '../api/Update',//这里写上你的action路径
+                    data: JSON.stringify({
+                        type:1,
+                        id: id,
+                        password: password,
+                        privilege: privilege,
+                        sex: sex,
+                        age: age,
+                        info: info
+                    }),//将你在form表单上提交的数据序列化
+                    type: 'POST',  //提交方式
+                    dataType: 'text', //提交的数据类型
+                    contentType: "application/json",
+                    async: true, //是否异步
+                    success: function (data) {//这是个回调函数  data表示从action中传过来的json数据
+                        console.log(data);
+                        alert("更新成功");
+                    }
+                });
+    }
+</script>
+<center id="user_list">
+    <table class="table table-hover" style="margin-top:5em;">
+        <tr>
+            <th>用户名</th>
+            <th>密码</th>
+            <th>年龄</th>
+            <th>性别</th>
+            <th>权限</th>
+            <th>个人简介</th>
+            <th>动作</th>
+        </tr>
+        @using ChatServer.Models;
+        @foreach (var u in ViewData["UserList"] as List<user_table>)
+        {
+            <tr id="@u.id.Trim()">
+                <td>@u.username</td>
+                <td>
+                    <div>
+                        <input type="password" class="form-control" name="password" value="@u.password">
+                    </div>
+                </td>
+                <td>
+                    <div class="col-sm-8">
+                        <input type="number" class="form-control" name="age" value="@u.age">
+                    </div>
+                </td>
+                <td>
+                    <div class="radio">
+                        <label class="radio-inline">
+                            <input type="radio" name="sex_r" value="0">
+                            男
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="sex_r" value="1">
+                            女
+                        </label>
+                    </div>
+                </td>
+                <td>
+                    <div class="radio">
+                        <label class="radio-inline">
+                            <input type="radio" name="privilege_r" value="1">
+                            用户
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="privilege_r" value="2">
+                            管理员
+                        </label>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <input type="text" class="form-control" name="info" value="@u.info">
+                    </div>
+                </td>
+                <td>
+                    <button id="login_btn" class="btn btn-default" onclick="updateClick('@(u.id.Trim())')" style="width:6em;">更新</button>
+                </td>
+            </tr>
+        }
+    </table>
+
+</center>

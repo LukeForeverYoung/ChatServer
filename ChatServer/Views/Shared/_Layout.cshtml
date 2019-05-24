@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <script>
+        function logout() {
+            window.location.href = 'Logout';
+        }
+    </script>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @if (System.Web.HttpContext.Current.Session["login"] is null)
+                    {
+                        <li>@Html.ActionLink("未登录", "Index", "Home")</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink($"{System.Web.HttpContext.Current.Session["username"]}", "Info", "Home")</li>
+                        <li><a onclick="logout()">登出</a></li>
+                        <li>@Html.ActionLink("广场", "Ground", "Home")</li>
+
+                        if ((int)System.Web.HttpContext.Current.Session["privilege"] >= 2)
+                        {
+                            <li>@Html.ActionLink("管理平台", "Control", "Home")</li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - 聊天室</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

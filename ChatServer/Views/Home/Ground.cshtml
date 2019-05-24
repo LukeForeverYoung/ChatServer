@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "用户广场";
+}
+
+<center id="user_list">
+    <script>
+        function chatClick() {
+            var url = 'Chat?id=';
+            $("input[name='user_id']:checked").each(function (index, element) {
+                url += element.value.trim() + ',';
+            });
+            url+='@Session["id"]';
+            window.location.href = url;
+        }
+
+
+</script>
+    <button id="chat_btn" class="btn btn-default" onclick="chatClick()" style="width:6em;">开始聊天</button>
+    <table class="table table-hover" style="margin-top:5em;">
+        <tr>
+            <th>状态</th>
+            <th>用户名</th>
+            <th>年龄</th>
+            <th>性别</th>
+            <th>个人简介</th>
+            <th>选取</th>
+        </tr>
+        @using ChatServer.Models;
+        @foreach (var u in ViewData["UserList"] as List<User>)
+        {
+            if (u.id.Trim() == Session["id"].ToString().Trim())
+            {
+                continue;
+            }
+            <tr>
+                <td style="vertical-align: middle;">@(u.state ? "在线" : "离线")</td>
+                <td style="vertical-align: middle;">@u.username</td>
+                <td style="vertical-align: middle;">@u.age</td>
+                <td style="vertical-align: middle;">@(u.sex == 0 ? "男" : "女")</td>
+                <td style="vertical-align: middle;">@u.info</td>
+                <td style="vertical-align: middle;"><input type="checkbox" name="user_id" value="@u.id" /></td>
+            </tr>
+        }
+    </table>
+
+</center>
